@@ -106,6 +106,10 @@
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
+        .btn-restart {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
         .game-info {
             margin: 1rem 0;
             font-size: 1.2rem;
@@ -221,6 +225,7 @@
                 <button class="cell" onclick="makeMove(8)"></button>
             </div>
 
+            <button class="btn btn-restart" onclick="restartGame()">Переиграть</button>
             <button class="btn" onclick="backToMenu()">Назад в меню</button>
         </div>
     </div>
@@ -344,6 +349,22 @@
 
                 update(gameRef, updates);
             }
+        };
+
+        window.restartGame = function() {
+            if (!gameRef) return;
+            
+            const newGameState = {
+                board: Array(9).fill(''),
+                currentTurn: 'X',
+                players: gameState.players, // Сохраняем игроков
+                status: 'playing',
+                winner: null
+            };
+            
+            set(gameRef, newGameState).catch(error => {
+                alert('Ошибка при перезапуске: ' + error.message);
+            });
         };
 
         window.backToMenu = function() {
