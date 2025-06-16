@@ -228,7 +228,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, push, onValue, off, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, set, push, onValue, off, remove, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // Firebase конфигурация
         const firebaseConfig = {
@@ -304,11 +304,11 @@
                     
                     // Присоединяемся к игре
                     const updates = {
-                        [`games/${currentRoomId}/players/O`]: true,
-                        [`games/${currentRoomId}/status`]: 'playing'
+                        'players/O': true,
+                        'status': 'playing'
                     };
                     
-                    set(ref(database), updates).then(() => {
+                    update(gameRef, updates).then(() => {
                         showGameArea();
                         startListening();
                     });
@@ -330,19 +330,19 @@
                 const isDraw = !winner && newBoard.every(cell => cell !== '');
                 
                 const updates = {
-                    [`games/${currentRoomId}/board`]: newBoard,
-                    [`games/${currentRoomId}/currentTurn`]: currentPlayer === 'X' ? 'O' : 'X'
+                    'board': newBoard,
+                    'currentTurn': currentPlayer === 'X' ? 'O' : 'X'
                 };
 
                 if (winner) {
-                    updates[`games/${currentRoomId}/winner`] = winner;
-                    updates[`games/${currentRoomId}/status`] = 'finished';
+                    updates['winner'] = winner;
+                    updates['status'] = 'finished';
                 } else if (isDraw) {
-                    updates[`games/${currentRoomId}/status`] = 'finished';
-                    updates[`games/${currentRoomId}/winner`] = 'draw';
+                    updates['status'] = 'finished';
+                    updates['winner'] = 'draw';
                 }
 
-                set(ref(database), updates);
+                update(gameRef, updates);
             }
         };
 
